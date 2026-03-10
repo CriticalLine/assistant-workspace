@@ -1,96 +1,113 @@
 # assistant-workspace
-assistant workspace
 
-这份说明已经是一个很好的起点，涵盖了共享代码仓库协作的核心要点，结构清晰、内容实用。为了让其成为一份更全面、更具指导性的团队规范文档，可以从以下几个方面进行完善和强化：
+A shared collaboration workspace for contributors building assistant features, experiments, and integrations. This repository holds code, documentation, CI configuration, and other artifacts used to develop and maintain the assistant.
 
-1. 结构优化与逻辑分层
+Table of contents
+- Purpose
+- Quick start
+- Branching & workflow
+- Commit messages
+- Pull request checklist
+- Graduation & clean-up
+- Testing & CI
+- Security & secrets
+- Support & communication
 
-• 明确章节：可以划分出“快速上手”、“详细规范”、“高级指引”等区块，让新成员和资深成员都能快速找到所需。
+Purpose
 
-• 前置关键原则：在“如何使用”之前，可以用一个“核心原则”章节，浓缩最重要的几点（如“分支开发、禁止强制推送、不提交秘密”），给人留下深刻印象。
+This repo is a sandbox and integration workspace where team members can:
+- Prototype features and integrations
+- Iterate on documentation and developer tooling
+- Maintain shared utilities and CI workflows used across assistant projects
 
-2. 内容补充与细化
+This is NOT intended as:
+- Long-term production home for released services
+- A place to store personal forks or throw-away spikes that live >2–3 weeks
+- The canonical repository for critical shared libraries (those should live in a dedicated repo)
 
-• 明确责任与流程：
+If something graduates from prototype → production, move or extract it to a dedicated repository and update references here.
 
- ◦ “权限与沟通”部分：可以更具体。例如，“在团队聊天或Issue中协调”可以指明具体是哪个聊天群或项目看板。“请求密钥”应说明向谁（如“仓库管理员”或具体角色）申请。
+Quick start
 
- ◦ 测试要求：在“保持变更可审查”中，可以明确测试是“必须”还是“建议”，以及测试覆盖率的要求（如有）。
+1. Clone the repo
+   git clone <repo-url>
+   cd assistant-workspace
 
- ◦ 合并后步骤：在“PR批准后”增加一步，例如“在合并后，建议在部署/测试环境中验证你的更改”。
+2. Sync main
+   git fetch origin
+   git checkout main
+   git pull --ff-only origin main
 
-• 增加实用章节：
+3. Create a feature branch
+   git checkout -b feat/<short-description>
 
- ◦ 问题排查/常见问题：例如，如何解决棘手的合并冲突，如何清理旧的本地分支，如何撤销一个已推送但未合并的提交。
+Branching & workflow
 
- ◦ 术语/规范链接：在文档末尾，可以链接到更详细的CONTRIBUTING.md、CODEOWNERS 文件以及项目的编码风格指南。
+- Always create a branch for changes. Use descriptive prefixes: `feat/`, `fix/`, `chore/`, `docs/`, `test/`.
+- For short-lived experiments/spikes you may also use `exp/<you>/<topic>` or `play/<nickname>/...` — delete these branches within 1–2 weeks.
+- Prefer small, focused PRs. Aim for <300 lines when possible.
+- Rebase or merge frequently to stay up to date with `main`.
+- After merge, delete your branch.
 
- ◦ 文档更新日志：在文档底部增加一个“本文档最后更新于……”的注释，鼓励大家在流程变更时更新此文档。
+Commit messages
 
-3. 表述强化
+Follow a lightweight Conventional Commits style:
+- Format: `type(scope): short description`
+- Examples:
+  - `feat(api): add healthcheck endpoint`
+  - `fix(cli): correct flag parsing`
+  - `docs(readme): improve usage examples`
 
-• 从“应该”到“必须”：对于关键禁令，使用更强烈的语气。例如，将“Do NOT override shared history...”改为“严禁对他人正在协作的分支使用强制推送(git push --force)，这会导致他人工作丢失。如有需要，请创建新分支。”
+Optional: emoji prefixes are allowed for extra skimmability (e.g. ✨, 🐛, 📝).
 
-• 提供正面范例和反面典型：除了“做什么”，明确“不做什么”有时更有效。例如，在提交信息部分，可以加一个不好的例子：“fix bug”（过于模糊）vs fix(login): handle null pointer in user authentication。
+Pull Request checklist
 
-综合修订建议示例（整合上述部分思路）
+Before requesting review, ensure your PR includes:
+- A clear title and description of what changed and why
+- Testing steps and expected results
+- Screenshots or logs for UI/behavioral changes if relevant
+- Linked issue(s) when applicable
+- CI passing (status checks green)
+- At least one reviewer assigned
 
-您可以将文档优化为如下结构：
+Extra experiment-focused items (recommended for this workspace):
+- Why this experiment matters / what question are we trying to answer?
+- How long do you expect this branch / feature to live? (delete soon / candidate for graduation / indefinite playground)
 
-团队协作开发规范
+Graduation & clean-up
 
-核心原则
+When an experiment proves valuable or is moving toward production:
+1. Create a new dedicated repository (or move the code to the target product repo).
+2. Copy or migrate the valuable parts and document the migration.
+3. Archive or delete the prototype branch in this repo.
+4. Leave a short note in a commit or PR description about where it moved (e.g., `chore: graduated prototype → see assistant-health-api repo`).
 
-1. 分支开发：任何对main分支的修改都必须通过特性分支和Pull Request进行。
-2. 代码审查：所有代码在合并前必须经过至少一位审查者的批准。
-3. 保护主干：严禁直接向main分支推送，也严禁对共享分支进行强制推送(git push --force)。
-4. 安全第一：绝对禁止将密码、密钥、令牌等敏感信息提交至仓库。
+Aim to keep this workspace clean — delete merged/obsolete branches regularly.
 
-🚀 快速上手（标准工作流）
+Testing & CI
 
-1. 获取最新代码：git fetch origin && git checkout main && git pull --ff-only origin main
-2. 创建特性分支：git checkout -b feat/your-feature-name
-3. 进行开发与提交：遵循“小步提交”原则，书写清晰的提交信息。
-4. 推送并发起PR：将分支推送到远端，并在GitHub/GitLab上创建Pull Request，目标分支为main。
-5. 审查与迭代：根据评审意见修改代码，推送至同一分支以更新PR。
-6. 合并与清理：PR获批后，使用“Squash and Merge”合并。合并后，请及时删除远程和本地的特性分支。
+- Add unit or integration tests for code changes where possible. CI must pass before merging.
+- Keep CI fast by running only impacted suites if supported.
+- If an experiment needs external secrets, document required secrets and test data (do not commit them).
 
-📘 详细规范
+Security & secrets
 
-• 分支命名：feat/、fix/、docs/、chore/、refactor/ 等前缀，后接简短描述，如 feat(auth): add OAuth login。
+- Never commit credentials, secrets, or private keys. Use the organization's secret storage for CI and deployment secrets.
+- If a secret is accidentally committed, rotate it immediately and notify the team.
+- If your experiment requires an API key or external service, use repository secrets and ask #assistant-dev for help.
 
-• 提交信息：格式为类型(范围): 简短描述。例如：fix(api): correct response status for empty list。描述请使用祈使句、现在时。
+Support & communication
 
-• Pull Request：
+- Coordinate large refactors or architecture changes in team chat or open an issue first.
+- For elevated access or CI secrets, request permission from repo owners.
 
- ◦ 标题：清晰概括变更内容。
+Contributing
 
- ◦ 描述：必须包含变更动机、测试方法（如何验证）和关联Issue（如有）。
+See CONTRIBUTING.md for detailed contribution guidelines, templates, and contact points.
 
- ◦ 大小：原则上不超过300行变更，若功能复杂，请将其拆分为多个顺序依赖的PR。
+Next steps (recommended)
+- Add `.github/CODEOWNERS` to auto-request reviewers.
+- Add `.github/pull_request_template.md` with the experiment checklist above.
+- Add a minimal GitHub Actions CI workflow that runs lint/type checks.
 
-• 代码审查：
-
- ◦ 审查者应在2个工作日内响应。
-
- ◦ 关注代码正确性、可读性、性能及测试覆盖。
-
- ◦ 评论应具体、友善，并提出改进建议。
-
-⚠️ 注意事项与常见问题
-
-• 同步上游更改：在长期开发中，请定期使用 git fetch origin && git rebase origin/main 来同步主干变更，保持分支清爽。
-
-• 秘密管理：所有凭据必须使用团队统一的秘密管理服务（如Vault、AWS Secrets Manager），禁止硬编码在配置文件或代码中。
-
-• 权限申请：如需仓库写入权限、CI/CD流水线访问或配置密钥，请联系 @项目管理员 或通过 团队工单系统 申请。
-
-🔗 相关资源
-
-• 更详细的贡献指南：./CONTRIBUTING.md
-
-• 代码模块负责人：./CODEOWNERS
-
-• 项目看板与Issue跟踪：[链接到项目管理工具]
-
-本文档最后更新于：2026-03-10。若流程有变更，请及时更新此文档.
+If you want, I can add CODEOWNERS, a PR template, and a minimal CI workflow and open a branch/PR with these changes.
